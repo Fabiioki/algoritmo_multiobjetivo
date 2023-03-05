@@ -7,8 +7,9 @@ Created on Thu Mar  2 16:13:50 2023
 
 import math
 import random
-# PESOS
 
+
+# PESOS
 def crear_pesos(N_pob):
     return  [(i/(N_pob-1), 1-i/(N_pob-1)) for i in range(N_pob)]
 
