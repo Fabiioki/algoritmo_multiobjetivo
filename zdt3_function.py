@@ -20,8 +20,8 @@ def funcion_zdt3(x_real):
     return(obj) 
 
 
-individuo = [random.random() for _ in range(30)]
-zdt3_individuo = funcion_zdt3(individuo)
+# individuo = [random.random() for _ in range(30)]
+# zdt3_individuo = funcion_zdt3(individuo)
 
-print(individuo)
-print(zdt3_individuo)
+# print(individuo)
+# print(zdt3_individuo)

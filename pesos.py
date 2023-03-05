@@ -6,7 +6,7 @@ Created on Thu Mar  2 16:13:50 2023
 """
 
 import math
-
+import random
 # PESOS
 
 def crear_pesos(N_pob):
@@ -41,5 +41,8 @@ def vecindad_pesos(v_pesos,vecindad):
 # PRUEBAS:
 # N = 30
 # vectores_peso =  [(i/(N-1), 1-i/(N-1)) for i in range(N)]
-# vecindad = 0.1
-# print(vecindad_pesos(vectores_peso, vecindad))
+# # print(vectores_peso)
+# vecindad = 0.20
+# vecinos = vecindad_pesos(vectores_peso, vecindad)[(1.0, 0.0)]
+# print(vecinos)
+# print(random.sample(vecinos, 3))
