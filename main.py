@@ -151,13 +151,14 @@ def bucle(generacion_0, punto_referencia_inicial):
     it = 0
     for gen_it in range(Generaciones):
         for hijo_it in range(N_poblacion):
-            peso_actual_it = Vector_pesos[hijo_it]
-            print("olaaaaaaaaaaaaaaa",peso_actual_it)
-            hijo = cruce_DE(Conjunto_pesos_vecinos[peso_actual_it], Vector_pesos,generacion_resultado)
-            evaluacion_hijo = funcion_zdt3(hijo)
-            act_punto_referencia = actualizar_punto_referencia(punto_referencia_inicial, evaluacion_hijo)
-            generacion_resultado = actualizacion_vecinos(peso_actual_it,hijo,generacion_resultado,act_punto_referencia)
-            it += 1
+            if random.random() > 0.5 :
+                peso_actual_it = Vector_pesos[hijo_it]
+                print("olaaaaaaaaaaaaaaa",peso_actual_it)
+                hijo = cruce_DE(Conjunto_pesos_vecinos[peso_actual_it], Vector_pesos,generacion_resultado)
+                evaluacion_hijo = funcion_zdt3(hijo)
+                act_punto_referencia = actualizar_punto_referencia(punto_referencia_inicial, evaluacion_hijo)
+                generacion_resultado = actualizacion_vecinos(peso_actual_it,hijo,generacion_resultado,act_punto_referencia)
+                it += 1
             
     print(it)
     return generacion_resultado
