@@ -6,8 +6,6 @@ Created on Thu Mar  2 16:13:50 2023
 """
 
 import math
-import random
-
 
 # PESOS
 def crear_pesos(N_pob):
@@ -27,19 +25,23 @@ def distancia_vecinos(vector, vectores):
 
 def vecindad_pesos(v_pesos,vecindad):
     # Devuelve los vecinos más cercanos de un vector peso dado un porcentaje de vecinos que queremos
+    # Clave = (vector_peso, puesto) : Valor = Conjunto de pesos vecinos
     vecinos = dict()
     n_vec = math.floor(vecindad*len(v_pesos))
-
+    # it = 0
     for vector in v_pesos:
         aux = distancia_vecinos(vector,v_pesos)
         aux.sort(key = lambda x : x[1])
         vecinos_vector = aux[:n_vec]
-        vecinos[vector] = [v[0] for v in vecinos_vector]
-
+        # vecinos[(vector,it)] = [v[0] for v in vecinos_vector]
+        vecinos[(vector)] = [v[0] for v in vecinos_vector]
+        # it += 1
     return vecinos
 
 
-# PRUEBAS:
+################################################################################################################
+# PRUEBAS 
+
 # N = 30
 # vectores_peso =  [(i/(N-1), 1-i/(N-1)) for i in range(N)]
 # # print(vectores_peso)

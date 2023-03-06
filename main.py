@@ -6,15 +6,15 @@ import numpy as np
 from pesos import crear_pesos, vecindad_pesos
 from tchebycheff import tchebycheff, inicializar_punto_referencia, actualizar_punto_referencia
 from zdt3_function import funcion_zdt3
-
+from inicializacion import generacion_inicial, test_generacion
 
 # Parámetros de entrada establecidos:
     # N_poblacion: tamaño de la población
     # Generaciones: Número de generaciones
     # T_vecindad : Tamaño de vecindad
 N_poblacion = 40
-Generaciones = 250
-T_vecindad = 0.2
+Generaciones = 1
+T_vecindad = 0.15
 
 # Pasos que hay que seguir:
     # Inicializacion
@@ -26,47 +26,21 @@ T_vecindad = 0.2
 
 ##############################################################################################################
 # INICIALIZACION
+
 # Crear N vectores peso, uno por cada subproblema
 Vector_pesos = crear_pesos(N_poblacion)
 
 # Conjunto B(i) para cada vector peso calculamos sus T vectores vecinos 
 Conjunto_pesos_vecinos = vecindad_pesos(Vector_pesos, T_vecindad)
-print(type(Conjunto_pesos_vecinos))
+
 # Inicializamos la población incial
-def generacion_inicial(n_indivuos):
-    # Crea tantos individuos como el parámetro que pasemos
-    ls_individuos = list()
-    
-    for _ in range(n_indivuos):
-        ls_individuos.append([random.random() for _ in range(30)])
-        
-    return ls_individuos
-
 generacion_0 = generacion_inicial(N_poblacion)
-# print(generacion_0)
-# Evaluamos las prestaciones de la generación inicial
-def test_generacion(individuos):
-    puntos = list()
-    for individuo in individuos:
-        puntos.append(funcion_zdt3(individuo))
-    return puntos
 
+# Evaluamos las prestaciones de la generación inicial
 evaluacion_generacion_0 = test_generacion(generacion_0)
 
-# print("generacion 0",evaluacion_generacion_0)
-# p_x = [x[0] for x in evaluacion_generacion_0]
-# p_y = [y[1] for y in evaluacion_generacion_0]
-# plt.scatter(p_x, p_y)
-
 # Inicializamos los puntos de referencia (z1,z2):
-z1_inicial, z2_inicial = inicializar_punto_referencia(evaluacion_generacion_0) # ponemos 100 para poder inicializar los puntos de referencia
-#print(z1_inicial,z2_inicial)
-
-# Unir individuos con sus pesos
-# lambda_individuos = list(zip(vector_pesos, generacion_0))
-# print("vector pesos",lambda_individuos)
-
-
+punto_referencia_inicial = inicializar_punto_referencia(evaluacion_generacion_0)
 
 
 ##############################################################################################################
@@ -106,17 +80,17 @@ def cruce_DE(vecinos, pesos, generacion):
 # peso_e, individuo_e = lambda_individuos[0]
 # print("ejemplo : ", ex)
 
-vecinos_prueba = Conjunto_pesos_vecinos[(0.0, 1.0)] #vecinos
-hijo = cruce_DE(vecinos_prueba, Vector_pesos, generacion_0)
+# vecinos_prueba = Conjunto_pesos_vecinos[(0.0, 1.0)] #vecinos
+# hijo = cruce_DE(vecinos_prueba, Vector_pesos, generacion_0)
 # print("Hijo: ", hijo)
 
 
 # Evaluación: Evaluar F(y)
-evaluacion_hijo = funcion_zdt3(hijo)
+# evaluacion_hijo = funcion_zdt3(hijo)
 # print(evaluacion_hijo)
 
 # Actualización del punto de referencia
-act_punto_referencia = actualizar_punto_referencia((z1_inicial, z2_inicial), evaluacion_hijo)
+# act_punto_referencia = actualizar_punto_referencia((z1_inicial, z2_inicial), evaluacion_hijo)
 # print(act_punto_referencia)
 
 
@@ -135,14 +109,14 @@ def actualizacion_vecinos(peso, hijo, generacion ,punto_referencia):
     gte_hijo = tchebycheff(hijo, peso, punto_referencia)
     for i in range(len(pesos_vecinos)):
         gte_vecino = tchebycheff(individuos_vecinos[i],pesos_vecinos[i],punto_referencia)
-        if gte_hijo <= gte_vecino:
+        if gte_hijo < gte_vecino:
             puesto = Vector_pesos.index(pesos_vecinos[i])
             generacion[puesto] = hijo
-            print("ha cambiadoooooooooooooooooooooooooooooooooooooooooo")
+            print("ha cambiado el elemento :", puesto)
     return generacion
     
-act_vecinos = actualizacion_vecinos((0.15384615384615385, 0.8461538461538461), hijo, generacion_0, act_punto_referencia)
-print(len(act_vecinos))
+# act_vecinos = actualizacion_vecinos((0.15384615384615385, 0.8461538461538461), hijo, generacion_0, act_punto_referencia)
+# print(len(act_vecinos))
     
 # BUCLE(unimos los pasos anteriores) lo hacemos Generaciones veces:
 
@@ -163,11 +137,11 @@ def bucle(generacion_0, punto_referencia_inicial):
     print(it)
     return generacion_resultado
 
-prueba_bucle = bucle(generacion_0,(z1_inicial, z2_inicial))
-print(test_generacion(prueba_bucle))
-p_x = [x[0] for x in prueba_bucle]
-p_y = [y[1] for y in prueba_bucle]
-plt.scatter(p_x, p_y)
+# prueba_bucle = bucle(generacion_0,(z1_inicial, z2_inicial))
+# print(test_generacion(prueba_bucle))
+# p_x = [x[0] for x in prueba_bucle]
+# p_y = [y[1] for y in prueba_bucle]
+# plt.scatter(p_x, p_y)
 
 
 
