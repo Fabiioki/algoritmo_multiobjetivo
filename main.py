@@ -44,6 +44,10 @@ evaluacion_generacion_0 = test_generacion(generacion_0)
 # Inicializamos los puntos de referencia (z1,z2):
 punto_referencia_inicial = inicializar_punto_referencia(evaluacion_generacion_0)
 
+# print("generacion 0",evaluacion_generacion_0)
+# p_x = [x[0] for x in evaluacion_generacion_0]
+# p_y = [y[1] for y in evaluacion_generacion_0]
+# plt.scatter(p_x, p_y)
 
 ##############################################################################################################
 # ITERACIONES
@@ -113,25 +117,51 @@ def actualizacion_vecinos(it_individuo, hijo, punto_referencia, pesos, generacio
 act_vecinos = actualizacion_vecinos(20, hijo, punto_referencia_inicial,Conjunto_pesos, generacion_0, Conjunto_pesos_vecinos)
 # print(act_vecinos)
 print(len(act_vecinos))
-    
+'''
 # BUCLE(unimos los pasos anteriores) lo hacemos Generaciones veces:
-
 def bucle(generacion_0, punto_referencia_inicial):
     generacion_resultado = generacion_0
     act_punto_referencia = punto_referencia_inicial
     # it = 0
     for gen_it in range(Generaciones):
         for hijo_it in range(N_poblacion):
-            if random.random() > 0.5 :
+            # si se genera hijo:
+            if random.random() < 0.5 :
                 # peso_actual_it = Vector_pesos[hijo_it]
                 hijo = cruce_DE(hijo_it, Conjunto_pesos, generacion_resultado, Conjunto_pesos_vecinos)
                 evaluacion_hijo = funcion_zdt3(hijo)
                 act_punto_referencia = actualizar_punto_referencia(act_punto_referencia, evaluacion_hijo)
                 generacion_resultado = actualizacion_vecinos(hijo_it, hijo, act_punto_referencia, Conjunto_pesos, generacion_resultado, Conjunto_pesos_vecinos)
-    #             it += 1
-    # print(it)
+                
     return generacion_resultado
-
+'''
+def bucle(generacion_0, punto_referencia_inicial):
+    generacion_resultado = generacion_0
+    act_punto_referencia = punto_referencia_inicial
+    # it = 0
+    for gen_it in range(Generaciones):
+        for hijo_it in range(N_poblacion):
+            # si se genera hijo:
+            if random.random() < 0.5 :
+                # peso_actual_it = Vector_pesos[hijo_it]
+                hijo = cruce_DE(hijo_it, Conjunto_pesos, generacion_resultado, Conjunto_pesos_vecinos)
+                # evaluacion_hijo = funcion_zdt3(hijo)
+                # act_punto_referencia = actualizar_punto_referencia(act_punto_referencia, evaluacion_hijo)
+                # generacion_resultado = actualizacion_vecinos(hijo_it, hijo, act_punto_referencia, Conjunto_pesos, generacion_resultado, Conjunto_pesos_vecinos)
+                
+                # mutar hijo:                
+                if random.random() < 1 / len(hijo):
+                    for gen_it in range(len(hijo)):
+                        U = math.sqrt(-2*math.log(random.uniform(0, 0.2))) * math.cos(2*math.pi*random.uniform(0, 0.2))
+                        hijo[gen_it] = hijo[gen_it] + U
+                        
+                evaluacion_hijo = funcion_zdt3(hijo)
+                act_punto_referencia = actualizar_punto_referencia(act_punto_referencia, evaluacion_hijo)
+                generacion_resultado = actualizacion_vecinos(hijo_it, hijo, act_punto_referencia, Conjunto_pesos, generacion_resultado, Conjunto_pesos_vecinos)
+                        
+    return generacion_resultado
+       
+    # print(it)
 prueba_bucle = bucle(generacion_0, punto_referencia_inicial)
 print(test_generacion(prueba_bucle))
 print(prueba_bucle)
