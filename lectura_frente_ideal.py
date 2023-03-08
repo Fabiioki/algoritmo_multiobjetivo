@@ -6,6 +6,7 @@ Created on Thu Mar  2 12:36:23 2023
 """
 import matplotlib.pyplot as plt
 from inicializacion import test_generacion
+
 # archivo = open("frente_ideal.txt","r")
 # lines = archivo.readlines()
 
@@ -27,12 +28,20 @@ poblacion = list()
 
 for linea in lines:
     linea_cortada= linea.split()
-    individuo = [float(elemento) for elemento in linea_cortada]
+    individuo = [float(elemento) for elemento in linea_cortada[:30]]
     poblacion.append(individuo)
     
 print(poblacion[1])    
-    
-# test = test_generacion(poblacion)
-# p_x = [x[0] for x in test]
-# p_y = [y[1] for y in test]
-# plt.scatter(p_x, p_y)
+
+res = True
+for individuo in poblacion:
+    for propiedad in individuo:
+        if propiedad < 0 or propiedad > 1:
+            res = False
+            print(individuo)
+
+
+test = test_generacion(poblacion)
+p_x = [x[0] for x in test]
+p_y = [y[1] for y in test]
+plt.scatter(p_x, p_y)

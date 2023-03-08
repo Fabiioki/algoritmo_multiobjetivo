@@ -62,6 +62,7 @@ def cruce_DE(it_individuo, pesos, generacion, pesos_vecinos):
     temp = [(p2-p3)*0.5 for p2,p3 in zip(padre_2,padre_3)]
     hijo = [ t+p1 for t,p1 in zip(temp,padre_1) ] 
     return comprobar_individuo(hijo)
+    # return hijo
     
     
 

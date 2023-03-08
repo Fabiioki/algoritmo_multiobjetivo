@@ -8,13 +8,14 @@ from tchebycheff import tchebycheff, inicializar_punto_referencia, actualizar_pu
 from zdt3_function import funcion_zdt3
 from inicializacion import generacion_inicial, test_generacion
 from cruce_DE import cruce_DE
+from lectura_frente_ideal import *
 
 # Parámetros de entrada establecidos:
     # N_poblacion: tamaño de la población
     # Generaciones: Número de generaciones
     # T_vecindad : Tamaño de vecindad
-N_poblacion = 40
-Generaciones = 250
+N_poblacion = 100
+Generaciones = 100
 T_vecindad = 0.1
 
 # Pasos que hay que seguir:
@@ -133,6 +134,7 @@ def bucle(generacion_0, punto_referencia_inicial):
 
 prueba_bucle = bucle(generacion_0, punto_referencia_inicial)
 print(test_generacion(prueba_bucle))
+print(prueba_bucle)
 p_x = [x[0] for x in prueba_bucle]
 p_y = [y[1] for y in prueba_bucle]
 plt.scatter(p_x, p_y)

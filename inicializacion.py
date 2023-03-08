@@ -5,12 +5,12 @@ Created on Mon Mar  6 14:09:13 2023
 @author: fabio
 """
 import random
-
+import matplotlib.pyplot as plt
 from pesos import crear_pesos, vecindad_pesos
 from tchebycheff import tchebycheff, inicializar_punto_referencia, actualizar_punto_referencia
 from zdt3_function import funcion_zdt3
 
-N_poblacion = 40
+N_poblacion = 100
 T_vecindad = 0.2
 
 ##############################################################################################################
