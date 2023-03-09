@@ -2,12 +2,13 @@ import math
 import random
 import matplotlib.pyplot as plt
 import numpy as np
+import operator
 
 from pesos import crear_pesos, vecindad_pesos
 from tchebycheff import tchebycheff, inicializar_punto_referencia, actualizar_punto_referencia
 from zdt3_function import funcion_zdt3
 from inicializacion import generacion_inicial, test_generacion
-from cruce_DE import cruce_DE
+# from cruce_DE import cruce_DE
 from lectura_frente_ideal import *
 
 # Parámetros de entrada establecidos:
@@ -134,13 +135,13 @@ def bucle(generacion_0, punto_referencia_inicial):
                 generacion_resultado = actualizacion_vecinos(hijo_it, hijo, act_punto_referencia, Conjunto_pesos, generacion_resultado, Conjunto_pesos_vecinos)
                 
     return generacion_resultado
-'''
 def bucle(generacion_0, punto_referencia_inicial):
     generacion_resultado = generacion_0
     act_punto_referencia = punto_referencia_inicial
     # it = 0
     for gen_it in range(Generaciones):
         for hijo_it in range(N_poblacion):
+            
             # si se genera hijo:
             if random.random() < 0.5 :
                 # peso_actual_it = Vector_pesos[hijo_it]
@@ -160,14 +161,68 @@ def bucle(generacion_0, punto_referencia_inicial):
                 generacion_resultado = actualizacion_vecinos(hijo_it, hijo, act_punto_referencia, Conjunto_pesos, generacion_resultado, Conjunto_pesos_vecinos)
                         
     return generacion_resultado
-       
+'''
+#subproblema = peso
+def get_individuo_subproblem(generacion, peso, punto_referencia):
+    
+    diccionario_tchebycheff = dict()
+    
+    for individuo in generacion:
+        diccionario_tchebycheff[individuo] = tchebycheff(individuo, peso, punto_referencia)
+    
+    return min(diccionario_tchebycheff.items(), key = operator.itemgetter(1)) # Devuelve la clave y valor del valor mínimo del diccionario
+        
+def cruce_DE(peso_subproblema, generacion_actual, punto_referencia):
+    
+    def get_individuos_padres(subproblemas_padres, generacion,punto_referencia):
+        padres = list()
+        for subproblema in subproblemas_padres:
+            padre, _ = get_individuo_subproblem(generacion, subproblema, punto_referencia)
+            padres.append(padre)
+        return padres
+    
+    subproblemas_padres = random.sample(Conjunto_pesos_vecinos[peso_subproblema], 3) # obtenemos los 3 subproblemas padres para la mutación
+    individuos_padres = get_individuos_padres(subproblemas_padres, generacion_actual, punto_referencia_actual)
+
+    
+def bucle(generacion_0, punto_referencia_inicial):
+    generacion_actual = generacion_0
+    punto_referencia_actual = punto_referencia_inicial
+    for generacion in range(Generaciones):
+        for indice_subproblema in range(N_poblacion):
+            peso_subproblema = Conjunto_pesos[indice_subproblema]
+            subproblemas_padres = random.sample(Conjunto_pesos_vecinos[peso_subproblema], 3) # obtenemos los 3 subproblemas padres para la mutación
+            individuos_padres = get_individuos_padres(subproblemas_padres, generacion_actual, punto_referencia_actual)
+            
+            hijo = cruce_DE(padres)
+            
+            best_individuo_subproblema, _fitness = get_individuo_subproblem(generacion_actual,peso_subproblema,punto_referencia_actual)
+           
+  
+         
+
+            
+# def cruce_DE(lista_padres):
+    
+    
+#     # peso_indv_actual = pesos[it_individuo]
+#     pesos_padres = random.sample(pesos_vecinos[list(pesos_vecinos)[it_individuo]] , 3)
+#     padres = get_candidatos(pesos, pesos_padres, generacion)
+#     padre_1,padre_2,padre_3 = padres
+#     temp = [(p2-p3)*0.5 for p2,p3 in zip(padre_2,padre_3)]
+#     hijo = [ t+p1 for t,p1 in zip(temp,padre_1) ] 
+#     return comprobar_individuo(hijo)
+#     # return hijo
+
+
+
     # print(it)
-prueba_bucle = bucle(generacion_0, punto_referencia_inicial)
-print(test_generacion(prueba_bucle))
-print(prueba_bucle)
-p_x = [x[0] for x in prueba_bucle]
-p_y = [y[1] for y in prueba_bucle]
-plt.scatter(p_x, p_y)
+# prueba_bucle = bucle(generacion_0, punto_referencia_inicial)
+# print(test_generacion(prueba_bucle))
+# print(prueba_bucle)
+# p_x = [x[0] for x in prueba_bucle]
+# p_y = [y[1] for y in prueba_bucle]
+# plt.scatter(p_x, p_y)
 
 
 
