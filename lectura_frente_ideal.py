@@ -6,7 +6,7 @@ Created on Thu Mar  2 12:36:23 2023
 """
 import matplotlib.pyplot as plt
 from inicializacion import test_generacion
-
+'''
 archivo = open("frente_ideal.txt","r")
 lines = archivo.readlines()
 
@@ -45,3 +45,4 @@ for individuo in poblacion:
 p_x = [x[0] for x in poblacion[2:36]]
 p_y = [y[1] for y in poblacion[2:36]]
 plt.scatter(p_x, p_y)
+'''

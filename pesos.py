@@ -16,14 +16,36 @@ def dist_euc (v1, v2):
     v2x,v2y = v2
     return math.sqrt((v2x-v1x)**2 + (v2y-v1y)**2)
 
+# def distancia_vecinos(vector, vectores):
+#     # Dado un vector peso devuelve todas las distancias que tiene con los demas vectores peso 
+#     ls_out = list()
+#     for vs in vectores:
+#         ls_out.append((vs, dist_euc(vector,vs)))
+#     return ls_out
+
+# def vecindad_pesos(v_pesos,vecindad):
+#     # Devuelve los vecinos más cercanos de un vector peso dado un porcentaje de vecinos que queremos
+#     # Clave = (vector_peso, puesto) : Valor = Conjunto de pesos vecinos
+#     vecinos = dict()
+#     n_vec = math.floor(vecindad*len(v_pesos))
+#     # it = 0
+#     for vector in v_pesos:
+#         aux = distancia_vecinos(vector,v_pesos)
+#         aux.sort(key = lambda x : x[1])
+#         vecinos_vector = aux[:n_vec]
+#         # vecinos[(vector,it)] = [v[0] for v in vecinos_vector]
+#         vecinos[(vector)] = [v[0] for v in vecinos_vector]
+#         # it += 1
+#     return vecinos
+
 def distancia_vecinos(vector, vectores):
     # Dado un vector peso devuelve todas las distancias que tiene con los demas vectores peso 
     ls_out = list()
-    for vs in vectores:
-        ls_out.append((vs, dist_euc(vector,vs)))
+    for it in range(len(vectores)):
+        ls_out.append((it, dist_euc(vector,vectores[it])))
     return ls_out
 
-def vecindad_pesos(v_pesos,vecindad):
+def vecindad_pesos(v_pesos,vecindad): # Devuelve los INDICES de los vecinos
     # Devuelve los vecinos más cercanos de un vector peso dado un porcentaje de vecinos que queremos
     # Clave = (vector_peso, puesto) : Valor = Conjunto de pesos vecinos
     vecinos = dict()
@@ -44,8 +66,10 @@ def vecindad_pesos(v_pesos,vecindad):
 
 # N = 30
 # vectores_peso =  [(i/(N-1), 1-i/(N-1)) for i in range(N)]
-# # print(vectores_peso)
+# print(vectores_peso)
+# print(distancia_vecinos(vectores_peso[0], vectores_peso))
 # vecindad = 0.20
 # vecinos = vecindad_pesos(vectores_peso, vecindad)[(1.0, 0.0)]
+
 # print(vecinos)
 # print(random.sample(vecinos, 3))

@@ -18,14 +18,14 @@ T_vecindad = 0.2
 
 #---------------------------------------------------------
 # Crear N vectores peso, uno por cada subproblema
-Conjunto_pesos = crear_pesos(N_poblacion)
+# Conjunto_pesos = crear_pesos(N_poblacion)
 # print(Conjunto_pesos)
 # print(len(Conjunto_pesos))
 #---------------------------------------------------------
 
 
 # Conjunto B(i) para cada vector peso calculamos sus T vectores vecinos 
-Conjunto_pesos_vecinos = vecindad_pesos(Conjunto_pesos, T_vecindad)
+# Conjunto_pesos_vecinos = vecindad_pesos(Conjunto_pesos, T_vecindad)
 # print(type(Conjunto_pesos_vecinos))
 # for k,v in Conjunto_pesos_vecinos.items():
 #     print("clave :", k)
@@ -43,7 +43,7 @@ def generacion_inicial(n_indivuos):
         
     return ls_individuos
 
-generacion_0 = generacion_inicial(N_poblacion)
+# generacion_0 = generacion_inicial(N_poblacion)
 # print(generacion_0)
 #---------------------------------------------------------
 
@@ -55,12 +55,12 @@ def test_generacion(individuos):
         puntos.append(funcion_zdt3(individuo))
     return puntos
 
-evaluacion_generacion_0 = test_generacion(generacion_0)
+# evaluacion_generacion_0 = test_generacion(generacion_0)
 #---------------------------------------------------------
 
 
 # Inicializamos los puntos de referencia (z1,z2):
-punto_referencia_inicial = inicializar_punto_referencia(evaluacion_generacion_0)
+# punto_referencia_inicial = inicializar_punto_referencia(evaluacion_generacion_0)
 
 
 ################################################################################################################
