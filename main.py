@@ -9,7 +9,7 @@ from tchebycheff import tchebycheff, inicializar_punto_referencia, actualizar_pu
 from zdt3_function import funcion_zdt3
 from inicializacion import generacion_inicial, test_generacion
 # from cruce_DE import cruce_DE
-# from lectura_frente_ideal import *
+from lectura_frente_ideal import *
 
 # Parámetros de entrada establecidos:
     # N_poblacion: tamaño de la población
@@ -17,7 +17,7 @@ from inicializacion import generacion_inicial, test_generacion
     # T_vecindad : Tamaño de vecindad
 N_poblacion = 100
 Generaciones = 100
-T_vecindad = 0.1
+T_vecindad = 0.10
 
 # Pasos que hay que seguir:
     # Inicializacion
@@ -106,12 +106,15 @@ def cruce_DE(peso_subproblema, generacion, punto_referencia):
 
 def actualizacion_vecinos(hijo, evaluacion_hijo ,peso_subproblema, punto_referencia, generacion):
     indices_pesos_vecinos = Conjunto_pesos_vecinos[peso_subproblema]
-    print(indices_pesos_vecinos)
     gte_hijo = tchebycheff(hijo, peso_subproblema, punto_referencia)
+    # print(hijo)
+    # print("llego aquiiii:", gte_hijo)
     for indice_peso in indices_pesos_vecinos:
-        peso = Conjunto_pesos[indices_pesos_vecinos]
-        individuo = get_individuo_subproblema(generacion, peso, punto_referencia)
-        gte_vecino = tchebycheff(individuo, peso, punto_referencia)
+        peso = Conjunto_pesos[indice_peso]
+        # print(peso,"pesooo")
+        individuo,_ = get_individuo_subproblema(generacion, peso, punto_referencia)
+        # print(individuo,"indivvv")
+        gte_vecino = tchebycheff(list(individuo), peso, punto_referencia)
         if gte_hijo <= gte_vecino:
             generacion[indice_peso] = hijo
     return generacion
@@ -121,22 +124,36 @@ def actualizacion_vecinos(hijo, evaluacion_hijo ,peso_subproblema, punto_referen
 def bucle(generacion_0, punto_referencia_inicial):
     generacion_actual = generacion_0
     punto_referencia_actual = punto_referencia_inicial
+    it = 0
     for generacion in range(Generaciones):
+        print("generacion:", it)
         for indice_subproblema in range(N_poblacion):
+            # if random.random() < 0.5 : 
             peso_subproblema = Conjunto_pesos[indice_subproblema]
             hijo = cruce_DE(peso_subproblema, generacion_actual, punto_referencia_actual)
             evaluacion_hijo = funcion_zdt3(hijo)
             punto_referencia_actual = actualizar_punto_referencia(punto_referencia_actual, evaluacion_hijo)
             generacion_actual = actualizacion_vecinos(hijo, evaluacion_hijo, peso_subproblema, punto_referencia_actual, generacion_actual)
+        it+=1
     
     return generacion_actual     
-            
+      
+# prueba = Conjunto_pesos_vecinos[Conjunto_pesos[1]]
+# for it in prueba:
+#     print(Conjunto_pesos[it])
+
 prueba_bucle = bucle(generacion_0, punto_referencia_inicial)
-print(test_generacion(prueba_bucle))
-print(prueba_bucle)
-p_x = [x[0] for x in prueba_bucle]
-p_y = [y[1] for y in prueba_bucle]
+puntos= test_generacion(prueba_bucle)
+# print(puntos)
+p_x = [x[0] for x in puntos]
+p_y = [y[1] for y in puntos]
 plt.scatter(p_x, p_y)
+
+puntos_iniciales = test_generacion(generacion_0)
+p_x1 = [x[0] for x in puntos_iniciales]
+p_y1= [y[1] for y in puntos_iniciales]
+plt.scatter(p_x1, p_y1)
+
 
 
 
