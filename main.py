@@ -1,13 +1,13 @@
-import math
+# import math
 import random
 import matplotlib.pyplot as plt
-import numpy as np
+# import numpy as np
 import operator
-
-from pesos import crear_pesos, vecindad_pesos
-from tchebycheff import tchebycheff, inicializar_punto_referencia, actualizar_punto_referencia
+# 
+# from pesos import crear_pesos, vecindad_pesos
+from tchebycheff import actualizar_punto_referencia , crear_pesos, tchebycheff, inicializar_punto_referencia
 from zdt3_function import funcion_zdt3
-from inicializacion import generacion_inicial, test_generacion
+from inicializacion import generacion_inicial, vecindad_pesos, test_generacion
 # from cruce_DE import cruce_DE
 from lectura_frente_ideal import *
 
@@ -15,8 +15,8 @@ from lectura_frente_ideal import *
     # N_poblacion: tamaño de la población
     # Generaciones: Número de generaciones
     # T_vecindad : Tamaño de vecindad
-N_poblacion = 100
-Generaciones = 100
+N_poblacion = 50
+Generaciones = 200
 T_vecindad = 0.10
 
 # Pasos que hay que seguir:
@@ -27,7 +27,7 @@ T_vecindad = 0.10
         # Actualizar punto de referencia (z)
         # Actualización de vecinos
 
-##############################################################################################################
+############################################################################################################################################################################################################################
 # INICIALIZACION
 
 # Crear N vectores peso, uno por cada subproblema
@@ -45,14 +45,14 @@ evaluacion_generacion_0 = test_generacion(generacion_0)
 # Inicializamos los puntos de referencia (z1,z2):
 punto_referencia_inicial = inicializar_punto_referencia(evaluacion_generacion_0)
 
-#-------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # PRUEBAS:
 # print("generacion 0",evaluacion_generacion_0)
 # p_x = [x[0] for x in evaluacion_generacion_0]
 # p_y = [y[1] for y in evaluacion_generacion_0]
 # plt.scatter(p_x, p_y)
 
-##############################################################################################################
+############################################################################################################################################################################################################################
 # ITERACIONES
 # Reproducción: Selecciona aleatoriamente índices de B(i) y genera una nueva solución "y" usando operadores evolutivos. (y = es hijo)
 # Cruce DE : utilizamos 3 individuos elegidos aleatoriamente en la vecindad
@@ -63,7 +63,7 @@ punto_referencia_inicial = inicializar_punto_referencia(evaluacion_generacion_0)
 
 # Actualización de vecinos
 
-#-------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def get_individuo_subproblema(generacion, peso, punto_referencia):
     
@@ -76,9 +76,9 @@ def get_individuo_subproblema(generacion, peso, punto_referencia):
 
 # print(get_individuo_subproblema(generacion_0, Conjunto_pesos[1],punto_referencia_inicial))
 
-#-------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-def cruce_DE(peso_subproblema, generacion, punto_referencia):
+def mutacion_DE(peso_subproblema, generacion, punto_referencia):
     
     def get_individuos_padres(subproblemas_padres, generacion, punto_referencia):
         padres = list()
@@ -94,15 +94,27 @@ def cruce_DE(peso_subproblema, generacion, punto_referencia):
             if individuo[i] > 1: individuo[i] = 1.
         return individuo
     
+    factor_escala = 0.5
     indices_subproblemas_padres = random.sample(Conjunto_pesos_vecinos[peso_subproblema], 3) # obtenemos los 3 subproblemas padres para la mutación
     subproblemas_padres = [Conjunto_pesos[i] for i in indices_subproblemas_padres ] 
     individuos_padres = get_individuos_padres(subproblemas_padres, generacion, punto_referencia)
     padre_1,padre_2,padre_3 = individuos_padres
-    temp = [(p2-p3)*0.5 for p2,p3 in zip(padre_2,padre_3)]
+    temp = [(p2-p3)*factor_escala for p2,p3 in zip(padre_2,padre_3)]
     hijo = [ t+p1 for t,p1 in zip(temp,padre_1) ] 
     return comprobar_individuo(hijo)
 
-#-------------------------------------------------------------------------------------------------------------
+def cruce_DE(individuo_mutante, individuo_subproblema):
+    tasa_cruce = 0.7
+    individuo_resultado = [0.0]*30
+    j = random.randint(0, 29)
+    for i in range(30):
+        if random.random() <= tasa_cruce or i == j:
+            individuo_resultado[i] = individuo_mutante[i]
+        else : 
+            individuo_resultado[i] = individuo_subproblema[i]
+    return individuo_resultado
+
+#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def actualizacion_vecinos(hijo, evaluacion_hijo ,peso_subproblema, punto_referencia, generacion):
     indices_pesos_vecinos = Conjunto_pesos_vecinos[peso_subproblema]
@@ -119,8 +131,8 @@ def actualizacion_vecinos(hijo, evaluacion_hijo ,peso_subproblema, punto_referen
             generacion[indice_peso] = hijo
     return generacion
 
-#-------------------------------------------------------------------------------------------------------------
- 
+#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 def bucle(generacion_0, punto_referencia_inicial):
     generacion_actual = generacion_0
     punto_referencia_actual = punto_referencia_inicial
@@ -130,29 +142,22 @@ def bucle(generacion_0, punto_referencia_inicial):
         for indice_subproblema in range(N_poblacion):
             # if random.random() < 0.5 : 
             peso_subproblema = Conjunto_pesos[indice_subproblema]
-            hijo = cruce_DE(peso_subproblema, generacion_actual, punto_referencia_actual)
-            evaluacion_hijo = funcion_zdt3(hijo)
+            individuo_subproblema,_ = get_individuo_subproblema(generacion_actual, peso_subproblema, punto_referencia_actual)
+            individuo_mutante = mutacion_DE(peso_subproblema, generacion_actual, punto_referencia_actual)
+            individuo_hijo = cruce_DE(individuo_mutante, list(individuo_subproblema))
+            evaluacion_hijo = funcion_zdt3(individuo_hijo)
             punto_referencia_actual = actualizar_punto_referencia(punto_referencia_actual, evaluacion_hijo)
-            generacion_actual = actualizacion_vecinos(hijo, evaluacion_hijo, peso_subproblema, punto_referencia_actual, generacion_actual)
+            generacion_actual = actualizacion_vecinos(individuo_hijo, evaluacion_hijo, peso_subproblema, punto_referencia_actual, generacion_actual)
         it+=1
     
-    return generacion_actual     
-      
-# prueba = Conjunto_pesos_vecinos[Conjunto_pesos[1]]
-# for it in prueba:
-#     print(Conjunto_pesos[it])
+    return generacion_actual    
 
 prueba_bucle = bucle(generacion_0, punto_referencia_inicial)
-puntos= test_generacion(prueba_bucle)
-# print(puntos)
-p_x = [x[0] for x in puntos]
-p_y = [y[1] for y in puntos]
+puntos_finales = test_generacion(prueba_bucle)
+print(puntos_finales)
+p_x = [x[0] for x in puntos_finales]
+p_y = [y[1] for y in puntos_finales]
 plt.scatter(p_x, p_y)
-
-puntos_iniciales = test_generacion(generacion_0)
-p_x1 = [x[0] for x in puntos_iniciales]
-p_y1= [y[1] for y in puntos_iniciales]
-plt.scatter(p_x1, p_y1)
 
 
 

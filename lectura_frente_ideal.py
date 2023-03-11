@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from inicializacion import test_generacion
 '''
 '''
-archivo = open("frente_ideal.txt","r")
+archivo = open("pop_nsgaii/frente_ideal.txt","r")
 lines = archivo.readlines()
 
 lista_f1 = list()
@@ -21,16 +21,16 @@ for line in lines :
     lista_f1.append(f1)
     lista_f2.append(f2)
     
-# plt.scatter(lista_f1, lista_f2)
+plt.scatter(lista_f1, lista_f2)
 # 
-archivo = open("generacion_final_nsgaii.txt","r")
-lines = archivo.readlines()
-poblacion = list()
+# archivo = open("generacion_final_nsgaii.txt","r")
+# lines = archivo.readlines()
+# poblacion = list()
 
-for linea in lines:
-    linea_cortada= linea.split()
-    individuo = [float(elemento) for elemento in linea_cortada[:30]]
-    poblacion.append(individuo)
+# for linea in lines:
+#     linea_cortada= linea.split()
+#     individuo = [float(elemento) for elemento in linea_cortada[:30]]
+#     poblacion.append(individuo)
     
 # print(poblacion[1])    
 
@@ -42,12 +42,12 @@ for linea in lines:
 #             print(individuo)
 
 
-test = test_generacion(poblacion)
-p_x = [x[0] for x in test]
-p_y = [y[1] for y in test]
-plt.scatter(p_x, p_y)
-# print(poblacion[:2])
-pop = poblacion[2:]
-p_x1 = [x[0] for x in pop]
-p_y1 = [y[1] for y in pop]
-plt.scatter(p_x1, p_y1)
+# test = test_generacion(poblacion)
+# p_x = [x[0] for x in test]
+# p_y = [y[1] for y in test]
+# plt.scatter(p_x, p_y)
+# # print(poblacion[:2])
+# pop = poblacion[2:]
+# p_x1 = [x[0] for x in pop]
+# p_y1 = [y[1] for y in pop]
+# plt.scatter(p_x1, p_y1)

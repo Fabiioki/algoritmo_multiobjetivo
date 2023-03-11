@@ -6,22 +6,24 @@ Created on Mon Mar  6 14:09:13 2023
 """
 import random
 import matplotlib.pyplot as plt
-from pesos import crear_pesos, vecindad_pesos
+import math
+
+# from pesos import crear_pesos, vecindad_pesos
 from tchebycheff import tchebycheff, inicializar_punto_referencia, actualizar_punto_referencia
 from zdt3_function import funcion_zdt3
 
 N_poblacion = 100
 T_vecindad = 0.2
 
-##############################################################################################################
+########################################################################################################################################################################
 # INICIALIZACION
 
-#---------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------------
 # Crear N vectores peso, uno por cada subproblema
 # Conjunto_pesos = crear_pesos(N_poblacion)
 # print(Conjunto_pesos)
 # print(len(Conjunto_pesos))
-#---------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------------
 
 
 # Conjunto B(i) para cada vector peso calculamos sus T vectores vecinos 
@@ -30,8 +32,7 @@ T_vecindad = 0.2
 # for k,v in Conjunto_pesos_vecinos.items():
 #     print("clave :", k)
 #     print("vecinos: ",v)
-#---------------------------------------------------------
-
+#------------------------------------------------------------------------------------------------------------------
 
 # Inicializamos la población incial
 def generacion_inicial(n_indivuos):
@@ -45,7 +46,7 @@ def generacion_inicial(n_indivuos):
 
 # generacion_0 = generacion_inicial(N_poblacion)
 # print(generacion_0)
-#---------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------------
 
 
 # Evaluamos las prestaciones de la generación inicial
@@ -56,14 +57,42 @@ def test_generacion(individuos):
     return puntos
 
 # evaluacion_generacion_0 = test_generacion(generacion_0)
-#---------------------------------------------------------
+
+########################################################################################################################################################################
+# PESOS
+def crear_pesos(N_pob):
+    return  [(i/(N_pob-1), 1-i/(N_pob-1)) for i in range(N_pob)]
+
+def dist_euc (v1, v2):
+    v1x,v1y = v1
+    v2x,v2y = v2
+    return math.sqrt((v2x-v1x)**2 + (v2y-v1y)**2)
 
 
-# Inicializamos los puntos de referencia (z1,z2):
-# punto_referencia_inicial = inicializar_punto_referencia(evaluacion_generacion_0)
+def distancia_vecinos(vector, vectores):
+    # Dado un vector peso devuelve todas las distancias que tiene con los demas vectores peso 
+    ls_out = list()
+    for it in range(len(vectores)):
+        ls_out.append((it, dist_euc(vector,vectores[it])))
+    return ls_out
 
+def vecindad_pesos(v_pesos,vecindad): # Devuelve los INDICES de los vecinos
+    # Devuelve los vecinos más cercanos de un vector peso dado un porcentaje de vecinos que queremos
+    # Clave = (vector_peso, puesto) : Valor = Conjunto de pesos vecinos
+    vecinos = dict()
+    n_vec = math.floor(vecindad*len(v_pesos))
+    # it = 0
+    for vector in v_pesos:
+        aux = distancia_vecinos(vector,v_pesos)
+        aux.sort(key = lambda x : x[1])
+        vecinos_vector = aux[:n_vec]
+        # vecinos[(vector,it)] = [v[0] for v in vecinos_vector]
+        vecinos[(vector)] = [v[0] for v in vecinos_vector]
+        # it += 1
+    return vecinos
 
-################################################################################################################
+########################################################################################################################################################################
+########################################################################################################################################################################═
 # PRUEBAS 
 
 # print(type(Conjunto_pesos_vecinos))
