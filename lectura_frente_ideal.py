@@ -7,6 +7,7 @@ Created on Thu Mar  2 12:36:23 2023
 import matplotlib.pyplot as plt
 from inicializacion import test_generacion
 '''
+'''
 archivo = open("pop_nsgaii/frente_ideal.txt","r")
 lines = archivo.readlines()
 
@@ -21,7 +22,8 @@ for line in lines :
     lista_f2.append(f2)
     
 plt.scatter(lista_f1, lista_f2)
-'''
+
+
 # 
 archivo = open("pop_nsgaii/generacion_final_nsgaii.txt","r")
 lines = archivo.readlines()

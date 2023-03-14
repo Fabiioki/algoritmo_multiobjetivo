@@ -15,9 +15,9 @@ from lectura_frente_ideal import *
     # N_poblacion: tamaño de la población
     # Generaciones: Número de generaciones
     # T_vecindad : Tamaño de vecindad
-N_poblacion = 200
-Generaciones = 50
-T_vecindad = 0.10
+N_poblacion = 400
+Generaciones = 25
+T_vecindad = 0.20
 
 # Pasos que hay que seguir:
     # Inicializacion
@@ -113,6 +113,9 @@ def cruce_DE(individuo_mutante, individuo_subproblema):
         else : 
             individuo_resultado[i] = individuo_subproblema[i]
     return individuo_resultado
+
+def mutacion_gaussiana():
+    pass
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 

@@ -38,10 +38,13 @@ T_vecindad = 0.2
 def generacion_inicial(n_indivuos):
     # Crea tantos individuos como el parámetro que pasemos
     ls_individuos = list()
-    
+    # n = math.trunc(n_indivuos/2)
     for _ in range(n_indivuos):
         ls_individuos.append([random.random() for _ in range(30)])
-        
+    
+    # for _ in range(n_indivuos-n):
+        # ls_individuos.append([random.uniform(0.5,1.0) for _ in range(30)])
+    
     return ls_individuos
 
 # generacion_0 = generacion_inicial(N_poblacion)
