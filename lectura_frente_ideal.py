@@ -7,7 +7,6 @@ Created on Thu Mar  2 12:36:23 2023
 import matplotlib.pyplot as plt
 from inicializacion import test_generacion
 '''
-'''
 archivo = open("pop_nsgaii/frente_ideal.txt","r")
 lines = archivo.readlines()
 
@@ -22,15 +21,28 @@ for line in lines :
     lista_f2.append(f2)
     
 plt.scatter(lista_f1, lista_f2)
+'''
 # 
-# archivo = open("generacion_final_nsgaii.txt","r")
-# lines = archivo.readlines()
-# poblacion = list()
+archivo = open("pop_nsgaii/generacion_final_nsgaii.txt","r")
+lines = archivo.readlines()
+poblacion = list()
+fit_pop = list()
 
-# for linea in lines:
-#     linea_cortada= linea.split()
-#     individuo = [float(elemento) for elemento in linea_cortada[:30]]
-#     poblacion.append(individuo)
+for linea in lines:
+    linea_cortada= linea.split()
+    fit_ind = [float(elemento) for elemento in linea_cortada[:2]]
+    individuo = [float(elemento) for elemento in linea_cortada[2:32]]
+    poblacion.append(individuo)
+    fit_pop.append(fit_ind)
+ 
+f_x = [x[0] for x in fit_pop]
+f_y = [y[1] for y in fit_pop]
+plt.scatter(f_x, f_y)
+
+test = test_generacion(poblacion)
+t_x = [x[0] for x in test]
+t_y = [y[1] for y in test]
+plt.scatter(t_x, t_y)
     
 # print(poblacion[1])    
 
@@ -43,9 +55,7 @@ plt.scatter(lista_f1, lista_f2)
 
 
 # test = test_generacion(poblacion)
-# p_x = [x[0] for x in test]
-# p_y = [y[1] for y in test]
-# plt.scatter(p_x, p_y)
+
 # # print(poblacion[:2])
 # pop = poblacion[2:]
 # p_x1 = [x[0] for x in pop]
