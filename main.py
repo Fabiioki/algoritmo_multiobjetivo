@@ -17,8 +17,8 @@ from inicializacion import generacion_inicial, vecindad_pesos, test_generacion
     # Generaciones: Número de generaciones
     # T_vecindad : Tamaño de vecindad
 N_poblacion = 200
-Generaciones = 50
-T_vecindad = 0.25
+Generaciones = 40
+T_vecindad = 0.10
 
 # Pasos que hay que seguir:
     # Inicializacion
@@ -98,7 +98,7 @@ def comprobar_individuo(individuo):
 
 
 def mutacion_DE(peso_subproblema, individuos_padres, punto_referencia):
-    factor_escala = 0.5
+    factor_escala = 0.7
     padre_1,padre_2,padre_3 = individuos_padres
     temp = [(p2-p3)*factor_escala for p2,p3 in zip(padre_2,padre_3)]
     hijo = [ t+p1 for t,p1 in zip(temp,padre_1) ] 
@@ -106,7 +106,7 @@ def mutacion_DE(peso_subproblema, individuos_padres, punto_referencia):
 
 
 def cruce_DE(individuo_mutante, individuo_subproblema):
-    tasa_cruce = 0.5
+    tasa_cruce = 0.3
     individuo_resultado = [0.0]*30
     j = random.randint(0, 29)
     for i in range(30):
@@ -159,7 +159,7 @@ def bucle(generacion_0, punto_referencia_inicial):
         # print(diccionario_individuos_sub)
         for indice_subproblema in range(N_poblacion): 
             peso_subproblema = Conjunto_pesos[indice_subproblema]
-            print(peso_subproblema)
+            # print(peso_subproblema)
             individuo_subproblema = diccionario_individuos_sub[peso_subproblema]
             indices_pesos_mutacion = random.sample(Conjunto_pesos_vecinos[peso_subproblema], 3)
             pesos_mutuacion = [Conjunto_pesos[i] for i  in indices_pesos_mutacion]

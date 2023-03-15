@@ -24,7 +24,7 @@ from inicializacion import generacion_inicial, vecindad_pesos, test_generacion
     # T_vecindad : Tamaño de vecindad
 N_poblacion = 200
 Generaciones = 50
-T_vecindad = 0.25
+T_vecindad = 0.03
 
 # Pasos que hay que seguir:
     # Inicializacion

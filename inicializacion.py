@@ -12,8 +12,8 @@ import math
 from tchebycheff import tchebycheff, inicializar_punto_referencia, actualizar_punto_referencia
 from zdt3_function import funcion_zdt3
 
-N_poblacion = 100
-T_vecindad = 0.2
+# N_poblacion = 100
+# T_vecindad = 0.2
 
 ########################################################################################################################################################################
 # INICIALIZACION
