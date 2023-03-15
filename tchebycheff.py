@@ -27,8 +27,6 @@ def crear_pesos(N_pob):
     return  [(i/(N_pob-1), 1-i/(N_pob-1)) for i in range(N_pob)]
 
 
-
-
 def distancia_vecinos(vector, vectores):
     def dist_euc (v1, v2):
         v1x,v1y = v1

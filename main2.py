@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Mar 15 16:01:54 2023
+
+@author: fabio
+"""
 # import math
 import random
 import matplotlib.pyplot as plt
@@ -123,7 +129,7 @@ def mutacion_gaussiana(individuo):
     return individuo
         
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+'''
 def actualizacion_vecinos(hijo, evaluacion_hijo ,peso_subproblema, punto_referencia,diccionario_individuos_sub):
     gte_hijo = tchebycheff(hijo, peso_subproblema, punto_referencia)
     indices_pesos_vecinos = Conjunto_pesos_vecinos[peso_subproblema]
@@ -134,6 +140,20 @@ def actualizacion_vecinos(hijo, evaluacion_hijo ,peso_subproblema, punto_referen
         if gte_hijo <= gte_vecino:
             diccionario_individuos_sub[peso] = hijo
     return diccionario_individuos_sub
+'''
+
+def actualizacion_vecinos(hijo, evaluacion_hijo, punto_referencia, generacion, peso_subproblema):
+    gte_hijo = tchebycheff(hijo, peso_subproblema, punto_referencia)
+    indices_pesos_vecinos = Conjunto_pesos_vecinos[peso_subproblema]
+    for indice_peso in indices_pesos_vecinos:
+        peso = Conjunto_pesos[indice_peso]
+        individuo = generacion[indice_peso]
+        gte_vecino = tchebycheff(individuo, peso, punto_referencia)
+        if gte_hijo <= gte_vecino:
+            generacion[indice_peso] = hijo
+    return generacion
+
+
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -141,44 +161,32 @@ def bucle(generacion_0, punto_referencia_inicial):
     generacion_actual = generacion_0
     punto_referencia_actual = punto_referencia_inicial
     it = 0
-    puntos_finales = test_generacion(generacion_actual)
-    p_x = [x[0] for x in puntos_finales]
-    p_y = [y[1] for y in puntos_finales]
-    # texto = "Número de subproblemas:"+ str(N_poblacion)+ ", Número de generaciones:"+ str(Generaciones) + ", Vecindad:" + str(T_vecindad)
-    plt.title("generacion inicial")
-    plt.scatter(p_x, p_y)
-    # plt.title("Punto referencia actual")
-    # plt.plot(punto_referencia_actual[0],punto_referencia_actual[1],marker="o")
-    plt.xlim(0, 1)
-    plt.ylim(-1,4)
-    plt.show()
     for generacion in range(Generaciones):
         
         print("generacion:", it)
-        diccionario_individuos_sub = conjunto_individuos_subproblema(generacion_actual,Conjunto_pesos,punto_referencia_actual)
+        # diccionario_individuos_sub = conjunto_individuos_subproblema(generacion_actual,Conjunto_pesos,punto_referencia_actual)
         # print(diccionario_individuos_sub)
         for indice_subproblema in range(N_poblacion): 
-            peso_subproblema = Conjunto_pesos[indice_subproblema]
-            print(peso_subproblema)
-            individuo_subproblema = diccionario_individuos_sub[peso_subproblema]
-            indices_pesos_mutacion = random.sample(Conjunto_pesos_vecinos[peso_subproblema], 3)
-            pesos_mutuacion = [Conjunto_pesos[i] for i  in indices_pesos_mutacion]
-            individuos_mutacion = [diccionario_individuos_sub[peso] for peso in pesos_mutuacion]
-            individuo_mutante = mutacion_DE(peso_subproblema, individuos_mutacion, punto_referencia_actual)
-            individuo_hijo = cruce_DE(individuo_mutante, list(individuo_subproblema))
+            peso_subproblema = Conjunto_pesos[indice_subproblema] # obtenemos el peso del subproblema actual
+            individuo_subproblema = generacion_actual[indice_subproblema] # obtenemos el individuo iesimo de la generacion actual
+            indices_pesos_mutacion = random.sample(Conjunto_pesos_vecinos[peso_subproblema], 3) # obtenemos los indices de los elementos que van a ser los padres
+            individuos_mutacion = [generacion_actual[it] for it in indices_pesos_mutacion] # obtenemos los individuos iesimos para mutar
+            individuo_mutante = mutacion_DE(peso_subproblema, individuos_mutacion, punto_referencia_actual) # obtenemos el individuo mutante
+            individuo_hijo = cruce_DE(individuo_mutante, individuo_subproblema) 
             if random.random() < 1/30: 
-                individuo_hijo = mutacion_gaussiana(individuo_hijo)
-            individuo_hijo = comprobar_individuo(individuo_hijo) 
-            evaluacion_hijo = funcion_zdt3(individuo_hijo)
-            punto_referencia_actual = actualizar_punto_referencia(punto_referencia_actual, evaluacion_hijo)
-            diccionario_individuos_sub = actualizacion_vecinos(individuo_hijo, evaluacion_hijo, peso_subproblema, punto_referencia_actual, diccionario_individuos_sub)
-        generacion_actual = [el[1] for el in diccionario_individuos_sub.items()]
+                individuo_hijo = mutacion_gaussiana(individuo_hijo) # aplicamos el factor de mutuacion al hijo resultado
+            individuo_hijo = comprobar_individuo(individuo_hijo) # comprobamos que los valores del hijo estén dentro de los permintidos
+            evaluacion_hijo = funcion_zdt3(individuo_hijo) # evaluamos la funcion del hijo
+            punto_referencia_actual = actualizar_punto_referencia(punto_referencia_actual, evaluacion_hijo) # actualizamos el punto de referencia 
+            generacion_actual = actualizacion_vecinos(individuo_hijo, evaluacion_hijo, punto_referencia_actual, generacion_actual, peso_subproblema)
+
         it+=1
         puntos_finales = test_generacion(generacion_actual)
         p_x = [x[0] for x in puntos_finales]
         p_y = [y[1] for y in puntos_finales]
         plt.title("generacion: "+str(it))
         plt.scatter(p_x, p_y)
+        plt.title("Punto referencia generacion "+str(it))
         plt.xlim(0, 1)
         plt.ylim(-1,4)
         plt.show()
@@ -188,14 +196,13 @@ def bucle(generacion_0, punto_referencia_inicial):
 # PRUEBAS
 prueba_bucle = bucle(generacion_0, punto_referencia_inicial)
 # print(len(prueba_bucle))
-# puntos_finales = test_generacion(prueba_bucle)
+puntos_finales = test_generacion(prueba_bucle)
 # # print(puntos_finales)
-# p_x = [x[0] for x in puntos_finales]
-# p_y = [y[1] for y in puntos_finales]
-# texto = "Número de subproblemas:"+ str(N_poblacion)+ ", Número de generaciones:"+ str(Generaciones) + ", Vecindad:" + str(T_vecindad)
-# plt.title(texto)
-# plt.scatter(p_x, p_y)
+p_x = [x[0] for x in puntos_finales]
+p_y = [y[1] for y in puntos_finales]
+texto = "Número de subproblemas:"+ str(N_poblacion)+ ", Número de generaciones:"+ str(Generaciones) + ", Vecindad:" + str(T_vecindad)
+plt.title(texto)
+plt.scatter(p_x, p_y)
 
 # for peso in Conjunto_pesos:
 #     print(peso[0]+peso[1])
-
