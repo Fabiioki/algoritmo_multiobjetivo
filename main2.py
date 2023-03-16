@@ -71,7 +71,7 @@ punto_referencia_inicial = inicializar_punto_referencia(evaluacion_generacion_0)
 # Actualización de vecinos
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+'''
 def get_individuo_subproblema(generacion, peso, punto_referencia):
     
     diccionario_tchebycheff = dict()
@@ -81,13 +81,13 @@ def get_individuo_subproblema(generacion, peso, punto_referencia):
     
     return min(diccionario_tchebycheff.items(), key = operator.itemgetter(1)) # Devuelve la clave y valor del valor mínimo del diccionario
 
-
 def conjunto_individuos_subproblema(generacion, conjunto_pesos, punto_referencia):
     res = dict()
     for peso in conjunto_pesos:    
         individuo_sub,_  = get_individuo_subproblema(generacion, peso, punto_referencia)
         res[peso] = list(individuo_sub)
     return res
+'''
 
 #------------------------------------------------------------------------------
 # PRUEBAS:
@@ -104,7 +104,7 @@ def comprobar_individuo(individuo):
 
 
 def mutacion_DE(peso_subproblema, individuos_padres, punto_referencia):
-    factor_escala = 0.5
+    factor_escala = random.uniform(0,2)
     padre_1,padre_2,padre_3 = individuos_padres
     temp = [(p2-p3)*factor_escala for p2,p3 in zip(padre_2,padre_3)]
     hijo = [ t+p1 for t,p1 in zip(temp,padre_1) ] 
@@ -154,9 +154,43 @@ def actualizacion_vecinos(hijo, evaluacion_hijo, punto_referencia, generacion, p
     return generacion
 
 
+# def get_individuo_subproblema(generacion, peso, punto_referencia):
+    
+#     diccionario_tchebycheff = dict()
+    
+#     for individuo in generacion:
+#         diccionario_tchebycheff[tuple(individuo)] = tchebycheff(individuo, peso, punto_referencia)
+    
+#     return min(diccionario_tchebycheff.items(), key = operator.itemgetter(1)) # Devuelve la clave y valor del valor mínimo del diccionario
+
+
+# def conjunto_individuos_subproblema(generacion, conjunto_pesos, punto_referencia):
+#     res = dict()
+#     for peso in conjunto_pesos:    
+#         individuo_sub,_  = get_individuo_subproblema(generacion, peso, punto_referencia)
+#         res[peso] = list(individuo_sub)
+#     return res
+
+def get_problema_individuo(pesos, individuo,punto_referencia):
+    diccionario_res = dict()
+    
+    for peso in pesos:
+        diccionario_res[peso] = tchebycheff(individuo,peso, punto_referencia)
+        
+    return min(diccionario_res.items(), key = operator.itemgetter(1)) # Devuelve la clave y valor del valor mínimo del diccionario
+
+def get_individuo_subproblema(pesos, generacion,punto_referencia):
+    
+    diccionario_res = dict()
+    for individuo in generacion:    
+            diccionario_res[tuple(individuo)] =  get_problema_individuo(pesos,individuo,punto_referencia)
+
+    diccionario_reverso = {valor: list(clave) for clave, valor in diccionario_res.items()}
+    print(diccionario_reverso[(0.0, 1.0)])
+    return diccionario_reverso
+    
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 def bucle(generacion_0, punto_referencia_inicial):
     generacion_actual = generacion_0
     punto_referencia_actual = punto_referencia_inicial
@@ -164,13 +198,16 @@ def bucle(generacion_0, punto_referencia_inicial):
     for generacion in range(Generaciones):
         
         print("generacion:", it)
-        # diccionario_individuos_sub = conjunto_individuos_subproblema(generacion_actual,Conjunto_pesos,punto_referencia_actual)
+        diccionario_individuos_sub = get_individuo_subproblema(Conjunto_pesos,generacion_actual,punto_referencia_actual)
         # print(diccionario_individuos_sub)
         for indice_subproblema in range(N_poblacion): 
             peso_subproblema = Conjunto_pesos[indice_subproblema] # obtenemos el peso del subproblema actual
             individuo_subproblema = generacion_actual[indice_subproblema] # obtenemos el individuo iesimo de la generacion actual
+            # individuo_subproblema = diccionario_individuos_sub[peso_subproblema] # obtenemos el individuo asignado a este subproblema
+            
             indices_pesos_mutacion = random.sample(Conjunto_pesos_vecinos[peso_subproblema], 3) # obtenemos los indices de los elementos que van a ser los padres
             individuos_mutacion = [generacion_actual[it] for it in indices_pesos_mutacion] # obtenemos los individuos iesimos para mutar
+            # individuos_mutacion = [diccionario_individuos_sub[] fo ]
             individuo_mutante = mutacion_DE(peso_subproblema, individuos_mutacion, punto_referencia_actual) # obtenemos el individuo mutante
             individuo_hijo = cruce_DE(individuo_mutante, individuo_subproblema) 
             if random.random() < 1/30: 
@@ -191,6 +228,57 @@ def bucle(generacion_0, punto_referencia_inicial):
         plt.ylim(-1,4)
         plt.show()
     return generacion_actual
+'''
+def bucle(generacion_0, punto_referencia_inicial):
+    generacion_actual = generacion_0
+    punto_referencia_actual = punto_referencia_inicial
+    it = 0
+    puntos_finales = test_generacion(generacion_actual)
+    p_x = [x[0] for x in puntos_finales]
+    p_y = [y[1] for y in puntos_finales]
+    # texto = "Número de subproblemas:"+ str(N_poblacion)+ ", Número de generaciones:"+ str(Generaciones) + ", Vecindad:" + str(T_vecindad)
+    plt.title("generacion inicial")
+    plt.scatter(p_x, p_y)
+    # plt.title("Punto referencia actual")
+    # plt.plot(punto_referencia_actual[0],punto_referencia_actual[1],marker="o")
+    plt.xlim(0, 1)
+    plt.ylim(-1,4)
+    plt.show()
+    for generacion in range(Generaciones):
+        
+        print("generacion:", it)
+        diccionario_individuos_sub = get_individuo_subproblema(Conjunto_pesos,generacion_actual,punto_referencia_actual)
+        # print(diccionario_individuos_sub)
+        for indice_subproblema in range(N_poblacion): 
+            peso_subproblema = Conjunto_pesos[indice_subproblema]
+            # print(peso_subproblema)
+            individuo_subproblema = diccionario_individuos_sub[peso_subproblema]
+            indices_pesos_mutacion = random.sample(Conjunto_pesos_vecinos[peso_subproblema], 3)
+            pesos_mutuacion = [Conjunto_pesos[i] for i  in indices_pesos_mutacion]
+            individuos_mutacion = [diccionario_individuos_sub[peso] for peso in pesos_mutuacion]
+            individuo_mutante = mutacion_DE(peso_subproblema, individuos_mutacion, punto_referencia_actual)
+            individuo_hijo = cruce_DE(individuo_mutante, list(individuo_subproblema))
+            if random.random() < 1/30: 
+                individuo_hijo = mutacion_gaussiana(individuo_hijo)
+            individuo_hijo = comprobar_individuo(individuo_hijo) 
+            evaluacion_hijo = funcion_zdt3(individuo_hijo)
+            punto_referencia_actual = actualizar_punto_referencia(punto_referencia_actual, evaluacion_hijo)
+            diccionario_individuos_sub = actualizacion_vecinos(individuo_hijo, evaluacion_hijo, peso_subproblema, punto_referencia_actual, diccionario_individuos_sub)
+        generacion_actual = [el[1] for el in diccionario_individuos_sub.items()]
+        it+=1
+        puntos_finales = test_generacion(generacion_actual)
+        p_x = [x[0] for x in puntos_finales]
+        p_y = [y[1] for y in puntos_finales]
+        plt.title("generacion: "+str(it))
+        plt.scatter(p_x, p_y)
+        plt.xlim(0, 1)
+        plt.ylim(-1,4)
+        plt.show()
+    return generacion_actual
+'''
+
+
+
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # PRUEBAS

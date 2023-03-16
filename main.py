@@ -3,22 +3,21 @@ import random
 import matplotlib.pyplot as plt
 import operator
 import numpy as np
-import matplotlib.animation as animation
 
 # from pesos import crear_pesos, vecindad_pesos
 from tchebycheff import actualizar_punto_referencia , crear_pesos, tchebycheff, inicializar_punto_referencia
 from zdt3_function import funcion_zdt3
 from inicializacion import generacion_inicial, vecindad_pesos, test_generacion
 # from cruce_DE import cruce_DE
-# from lectura_frente_ideal import *
+
 
 # Parámetros de entrada establecidos:
     # N_poblacion: tamaño de la población
     # Generaciones: Número de generaciones
     # T_vecindad : Tamaño de vecindad
 N_poblacion = 200
-Generaciones = 40
-T_vecindad = 0.10
+Generaciones = 50
+T_vecindad = 0.3
 
 # Pasos que hay que seguir:
     # Inicializacion
@@ -98,15 +97,26 @@ def comprobar_individuo(individuo):
 
 
 def mutacion_DE(peso_subproblema, individuos_padres, punto_referencia):
-    factor_escala = 0.7
+    
+    # factor_escala = 1.5
+    factor_escala = random.uniform(0,2)
     padre_1,padre_2,padre_3 = individuos_padres
+    print("------------------------------------------------------------------------")
+    it = 0
+    # for padre in individuos_padres :
+    #     print("padre",it," :",padre)
+    #     it+=1
     temp = [(p2-p3)*factor_escala for p2,p3 in zip(padre_2,padre_3)]
-    hijo = [ t+p1 for t,p1 in zip(temp,padre_1) ] 
+    hijo = [ t+p1 for t,p1 in zip(temp,padre_1) ]
+    # print("hijo: ", hijo)
+    enserio = hijo == padre_1 == padre_2 == padre_3 
+    print(enserio)
+    print("------------------------------------------------------------------------")
     return hijo
 
 
 def cruce_DE(individuo_mutante, individuo_subproblema):
-    tasa_cruce = 0.3
+    tasa_cruce = 0.5
     individuo_resultado = [0.0]*30
     j = random.randint(0, 29)
     for i in range(30):
@@ -187,15 +197,51 @@ def bucle(generacion_0, punto_referencia_inicial):
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # PRUEBAS
 prueba_bucle = bucle(generacion_0, punto_referencia_inicial)
-# print(len(prueba_bucle))
-# puntos_finales = test_generacion(prueba_bucle)
-# # print(puntos_finales)
-# p_x = [x[0] for x in puntos_finales]
-# p_y = [y[1] for y in puntos_finales]
-# texto = "Número de subproblemas:"+ str(N_poblacion)+ ", Número de generaciones:"+ str(Generaciones) + ", Vecindad:" + str(T_vecindad)
-# plt.title(texto)
-# plt.scatter(p_x, p_y)
+print(len(prueba_bucle))
+puntos_finales = test_generacion(prueba_bucle)
+# print(puntos_finales)
+p_x = [x[0] for x in puntos_finales]
+p_y = [y[1] for y in puntos_finales]
+texto = "Número de subproblemas:"+ str(N_poblacion)+ ", Número de generaciones:"+ str(Generaciones) + ", Vecindad:" + str(T_vecindad)
+plt.title(texto)
+from lectura_frente_ideal import *
+plt.scatter(p_x, p_y)
 
-# for peso in Conjunto_pesos:
-#     print(peso[0]+peso[1])
 
+
+
+
+
+
+
+#-------------------------------------------------------------------------------------------
+# PLOTS ------------------------------------------------------------------------------------
+# Visualizar los pesos vecinos de cada peso
+'''
+for peso in Conjunto_pesos:
+    indices_pesos_vecinos = Conjunto_pesos_vecinos[peso]
+    pesos_vecinos = [ Conjunto_pesos[peso] for peso in indices_pesos_vecinos]
+    peso_x = [peso[0] for peso in pesos_vecinos]
+    peso_y = [peso[1] for peso in pesos_vecinos]
+    plt.scatter(peso_x, peso_y)
+    plt.xlim(0, 1)
+    plt.ylim(0, 1)
+    plt.show()
+'''
+#-------------------------------------------------------------------------------------------
+# Visualizar todos los pesos en el plano
+'''
+peso_x = [peso[0] for peso in Conjunto_pesos]
+peso_y = [peso[1] for peso in Conjunto_pesos]
+plt.scatter(peso_x, peso_y)
+'''
+#-------------------------------------------------------------------------------------------
+# Visualizar el los individuos de la generacion incial sobre f1 y f2
+'''
+puntos_gen_inicial = test_generacion(generacion_0)
+test_x = [x[0] for x in puntos_gen_inicial]
+test_y = [y[1] for y in puntos_gen_inicial]
+plt.title("PLot generación incial de "+ str(N_poblacion) + " individuos.")
+plt.scatter(test_x, test_y)
+plt.scatter(punto_referencia_inicial[0], punto_referencia_inicial[1], color = "red")
+'''
