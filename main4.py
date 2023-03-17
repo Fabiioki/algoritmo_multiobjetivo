@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Mar 16 16:36:41 2023
+Created on Fri Mar 17 16:19:46 2023
 
 @author: Fabio
 """
@@ -22,9 +22,9 @@ from inicializacion import generacion_inicial, vecindad_pesos, test_generacion
     # N_poblacion: tamaño de la población
     # Generaciones: Número de generaciones
     # T_vecindad : Tamaño de vecindad
-N_poblacion = 100
-Generaciones = 100
-T_vecindad = 0.30
+N_poblacion = 50
+Generaciones = 200
+T_vecindad = 0.2
 
 # Pasos que hay que seguir:
     # Inicializacion
@@ -57,18 +57,17 @@ punto_referencia_inicial = inicializar_punto_referencia(evaluacion_generacion_0)
 def comprobar_individuo(individuo):
     # comprobar que los valores del individuo sean aptos
     for i in range(len(individuo)):
-        if individuo[i] < 0: individuo[i] = 0.01
-        if individuo[i] > 1: individuo[i] = 0.99
+        if individuo[i] < 0: individuo[i] = 0.
+        if individuo[i] > 1: individuo[i] = 1.
     return individuo
 
 
 def mutacion_DE(peso_subproblema, individuos_padres):
     factor_escala = random.uniform(0,2)
-    # factor_escala = 0.5
     padre_1,padre_2,padre_3 = individuos_padres
     temp = [(p2-p3)*factor_escala for p2,p3 in zip(padre_2,padre_3)]
-    vector_mutante = [ t+p1 for t,p1 in zip(temp,padre_1) ] 
-    return vector_mutante
+    hijo = [ t+p1 for t,p1 in zip(temp,padre_1) ] 
+    return hijo
 
 
 def cruce_DE(individuo_mutante, individuo_subproblema):
@@ -89,17 +88,16 @@ def mutacion_gaussiana(individuo):
     return individuo
 
 
-def actualizacion_vecinos(hijo, evaluacion_hijo, punto_referencia, generacion_actual, peso_subproblema):
+def actualizacion_vecinos(hijo, evaluacion_hijo, punto_referencia, generacion_actual, peso_subproblema, generacion_actualizada):
     gte_hijo = tchebycheff(hijo, peso_subproblema, punto_referencia)
     indices_pesos_vecinos = Conjunto_pesos_vecinos[peso_subproblema]
-    n_individuos = int(len(indices_pesos_vecinos)/2) 
-    for indice_peso in random.sample(indices_pesos_vecinos,n_individuos):
+    for indice_peso in indices_pesos_vecinos:
         peso = Conjunto_pesos[indice_peso]
         individuo = generacion_actual[indice_peso]
         gte_vecino = tchebycheff(individuo, peso, punto_referencia)
         if gte_hijo <= gte_vecino:
-            generacion_actual[indice_peso] = hijo
-    return generacion_actual
+            generacion_actualizada[indice_peso] = hijo
+    return generacion_actualizada
 
 
 ############################################################################################################################################################################################################################
@@ -109,11 +107,9 @@ def bucle(generacion_0, punto_referencia_inicial):
     punto_referencia_actual = punto_referencia_inicial
     it = 0
     for generacion in range(Generaciones):
-        
-        # generacion_futura = generacion_actual.copy()
+    
         print("generacion:", it)
-        # diccionario_individuos_sub = get_individuo_subproblema(Conjunto_pesos,generacion_actual,punto_referencia_actual)
-        # print(diccionario_individuos_sub)
+        generacion_actualizada = generacion_actual.copy()
         for indice_subproblema in range(N_poblacion): 
             peso_subproblema = Conjunto_pesos[indice_subproblema] # obtenemos el peso del subproblema actual
             individuo_subproblema = generacion_actual[indice_subproblema] # obtenemos el individuo iesimo de la generacion actual
@@ -126,21 +122,19 @@ def bucle(generacion_0, punto_referencia_inicial):
             individuo_hijo = comprobar_individuo(individuo_hijo) # comprobamos que los valores del hijo estén dentro de los permintidos            
             evaluacion_hijo = funcion_zdt3(individuo_hijo) # evaluamos la funcion del hijo
             punto_referencia_actual = actualizar_punto_referencia(punto_referencia_actual, evaluacion_hijo) # actualizamos el punto de referencia
+            generacion_actualizada = actualizacion_vecinos(individuo_hijo, evaluacion_hijo, punto_referencia_actual, generacion_actual, peso_subproblema,generacion_actualizada)
             
-            generacion_actual = actualizacion_vecinos(individuo_hijo, evaluacion_hijo, punto_referencia_actual, generacion_actual, peso_subproblema)
-
+        generacion_actual = generacion_actualizada
         it+=1
         puntos_finales = test_generacion(generacion_actual)
         p_x = [x[0] for x in puntos_finales]
         p_y = [y[1] for y in puntos_finales]
         plt.title("generacion: "+str(it))
         plt.scatter(p_x, p_y)
-        # plt.scatter(peso_subproblema[0],peso_subproblema[1],color="red")
         plt.title("Punto referencia generacion "+str(it))
         plt.xlim(0, 1)
         plt.ylim(-1,4)
         plt.show()
-
     return generacion_actual
 
 
@@ -154,5 +148,4 @@ texto = "Número de subproblemas:"+ str(N_poblacion)+ ", Número de generaciones
 from lectura_frente_ideal import *
 plt.title(texto)
 plt.scatter(p_x, p_y)
-
 

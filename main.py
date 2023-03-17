@@ -196,16 +196,16 @@ def bucle(generacion_0, punto_referencia_inicial):
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # PRUEBAS
-prueba_bucle = bucle(generacion_0, punto_referencia_inicial)
-print(len(prueba_bucle))
-puntos_finales = test_generacion(prueba_bucle)
-# print(puntos_finales)
-p_x = [x[0] for x in puntos_finales]
-p_y = [y[1] for y in puntos_finales]
-texto = "Número de subproblemas:"+ str(N_poblacion)+ ", Número de generaciones:"+ str(Generaciones) + ", Vecindad:" + str(T_vecindad)
-plt.title(texto)
-from lectura_frente_ideal import *
-plt.scatter(p_x, p_y)
+# prueba_bucle = bucle(generacion_0, punto_referencia_inicial)
+# print(len(prueba_bucle))
+# puntos_finales = test_generacion(prueba_bucle)
+# # print(puntos_finales)
+# p_x = [x[0] for x in puntos_finales]
+# p_y = [y[1] for y in puntos_finales]
+# texto = "Número de subproblemas:"+ str(N_poblacion)+ ", Número de generaciones:"+ str(Generaciones) + ", Vecindad:" + str(T_vecindad)
+# plt.title(texto)
+# from lectura_frente_ideal import *
+# plt.scatter(p_x, p_y)
 
 
 
@@ -218,6 +218,7 @@ plt.scatter(p_x, p_y)
 # PLOTS ------------------------------------------------------------------------------------
 # Visualizar los pesos vecinos de cada peso
 '''
+'''
 for peso in Conjunto_pesos:
     indices_pesos_vecinos = Conjunto_pesos_vecinos[peso]
     pesos_vecinos = [ Conjunto_pesos[peso] for peso in indices_pesos_vecinos]
@@ -227,7 +228,6 @@ for peso in Conjunto_pesos:
     plt.xlim(0, 1)
     plt.ylim(0, 1)
     plt.show()
-'''
 #-------------------------------------------------------------------------------------------
 # Visualizar todos los pesos en el plano
 '''
