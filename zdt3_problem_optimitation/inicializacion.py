@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import math
 
 # from pesos import crear_pesos, vecindad_pesos
-from tchebycheff import tchebycheff, inicializar_punto_referencia, actualizar_punto_referencia
+from tchebycheff import tchebycheff
 from zdt3_function import funcion_zdt3
 
 # N_poblacion = 100
@@ -66,14 +66,13 @@ def test_generacion(individuos):
 def crear_pesos(N_pob):
     return  [(i/(N_pob-1), 1-i/(N_pob-1)) for i in range(N_pob)]
 
-def dist_euc (v1, v2):
-    v1x,v1y = v1
-    v2x,v2y = v2
-    return math.sqrt((v2x-v1x)**2 + (v2y-v1y)**2)
-
-
 def distancia_vecinos(vector, vectores):
-    # Dado un vector peso devuelve todas las distancias que tiene con los demas vectores peso 
+    # Dado un vector peso devuelve todas las distancias que tiene con los demas vectores peso
+    def dist_euc (v1, v2):
+        v1x,v1y = v1
+        v2x,v2y = v2
+        return math.sqrt((v2x-v1x)**2 + (v2y-v1y)**2)
+    
     ls_out = list()
     for it in range(len(vectores)):
         ls_out.append((it, dist_euc(vector,vectores[it])))
@@ -93,6 +92,14 @@ def vecindad_pesos(v_pesos,vecindad): # Devuelve los INDICES de los vecinos
         vecinos[(vector)] = [v[0] for v in vecinos_vector]
         # it += 1
     return vecinos
+
+
+########################################################################################################################################################################
+# Punto referencia 
+def inicializar_punto_referencia(fitness_poblacion):
+    conj_f1 = [fit[0] for fit in fitness_poblacion]
+    conj_f2 = [fit[1] for fit in fitness_poblacion]
+    return (min(conj_f1),min(conj_f2))
 
 ########################################################################################################################################################################
 ########################################################################################################################################################################═

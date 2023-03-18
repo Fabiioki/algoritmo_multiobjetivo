@@ -4,19 +4,12 @@ Created on Thu Mar 16 16:36:41 2023
 
 @author: Fabio
 """
-
 import random
 import matplotlib.pyplot as plt
-import operator
-import numpy as np
-import matplotlib.animation as animation
 
-# from pesos import crear_pesos, vecindad_pesos
-from tchebycheff import actualizar_punto_referencia , crear_pesos, tchebycheff, inicializar_punto_referencia
+from tchebycheff import actualizar_punto_referencia , tchebycheff
 from zdt3_function import funcion_zdt3
-from inicializacion import generacion_inicial, vecindad_pesos, test_generacion
-# from cruce_DE import cruce_DE
-# from lectura_frente_ideal import *
+from inicializacion import generacion_inicial,crear_pesos, vecindad_pesos, test_generacion, inicializar_punto_referencia
 
 # Parámetros de entrada establecidos:
     # N_poblacion: tamaño de la población
@@ -24,7 +17,7 @@ from inicializacion import generacion_inicial, vecindad_pesos, test_generacion
     # T_vecindad : Tamaño de vecindad
 N_poblacion = 100
 Generaciones = 100
-T_vecindad = 0.30
+T_vecindad = 0.1
 
 # Pasos que hay que seguir:
     # Inicializacion
@@ -57,8 +50,8 @@ punto_referencia_inicial = inicializar_punto_referencia(evaluacion_generacion_0)
 def comprobar_individuo(individuo):
     # comprobar que los valores del individuo sean aptos
     for i in range(len(individuo)):
-        if individuo[i] < 0: individuo[i] = 0.01
-        if individuo[i] > 1: individuo[i] = 0.99
+        if individuo[i] < 0: individuo[i] = 0.0
+        if individuo[i] > 1: individuo[i] = 1.0
     return individuo
 
 
@@ -66,15 +59,16 @@ def mutacion_DE(peso_subproblema, individuos_padres):
     factor_escala = random.uniform(0,2)
     # factor_escala = 0.5
     padre_1,padre_2,padre_3 = individuos_padres
-    temp = [(p2-p3)*factor_escala for p2,p3 in zip(padre_2,padre_3)]
-    vector_mutante = [ t+p1 for t,p1 in zip(temp,padre_1) ] 
+    temp = [factor_escala*(p2-p3) for p2,p3 in zip(padre_2,padre_3)]
+    vector_mutante = [ t+p1 for t,p1 in zip(temp,padre_1)] 
     return vector_mutante
 
 
 def cruce_DE(individuo_mutante, individuo_subproblema):
-    tasa_cruce = 0.5
+    # Mezclar el individuo mutante con el individuo asignado al subproblema actual
+    tasa_cruce = 0.5 # CR crossover constant
     individuo_resultado = [0.0]*30
-    j = random.randint(0, 29)
+    j = random.randint(0, 29) # indice elegido aleatoriamente -> esto hace que el hijo tenga al menos un parametro del vector mutante
     for i in range(30):
         if random.random() <= tasa_cruce or i == j:
             individuo_resultado[i] = individuo_mutante[i]
@@ -84,16 +78,16 @@ def cruce_DE(individuo_mutante, individuo_subproblema):
 
 
 def mutacion_gaussiana(individuo):
+    # si aplicamos oiperador de mutacion gaussiana, lo aplicamos a cada componente de la solucion
     for it in range(len(individuo)): 
-        individuo[it] = individuo[it] + random.uniform(0,0.2)
+        individuo[it] = individuo[it] + random.uniform(0,0.05) # 0.05 porque sigma = (1-0)/20
     return individuo
 
 
-def actualizacion_vecinos(hijo, evaluacion_hijo, punto_referencia, generacion_actual, peso_subproblema):
+def actualizacion_vecinos(hijo, punto_referencia, generacion_actual, peso_subproblema):
     gte_hijo = tchebycheff(hijo, peso_subproblema, punto_referencia)
     indices_pesos_vecinos = Conjunto_pesos_vecinos[peso_subproblema]
-    n_individuos = int(len(indices_pesos_vecinos)/2) 
-    for indice_peso in random.sample(indices_pesos_vecinos,n_individuos):
+    for indice_peso in indices_pesos_vecinos:
         peso = Conjunto_pesos[indice_peso]
         individuo = generacion_actual[indice_peso]
         gte_vecino = tchebycheff(individuo, peso, punto_referencia)
@@ -104,21 +98,16 @@ def actualizacion_vecinos(hijo, evaluacion_hijo, punto_referencia, generacion_ac
 
 ############################################################################################################################################################################################################################
 def bucle(generacion_0, punto_referencia_inicial):
-    
-    generacion_actual = generacion_0
+    generacion_actual = generacion_0.copy()
     punto_referencia_actual = punto_referencia_inicial
     it = 0
     for generacion in range(Generaciones):
-        
-        # generacion_futura = generacion_actual.copy()
         print("generacion:", it)
-        # diccionario_individuos_sub = get_individuo_subproblema(Conjunto_pesos,generacion_actual,punto_referencia_actual)
-        # print(diccionario_individuos_sub)
         for indice_subproblema in range(N_poblacion): 
             peso_subproblema = Conjunto_pesos[indice_subproblema] # obtenemos el peso del subproblema actual
-            individuo_subproblema = generacion_actual[indice_subproblema] # obtenemos el individuo iesimo de la generacion actual
-            indices_pesos_mutacion = random.sample(Conjunto_pesos_vecinos[peso_subproblema], 3) # obtenemos los indices de los elementos que van a ser los padres
-            individuos_mutacion = [generacion_actual[it] for it in indices_pesos_mutacion] # obtenemos los individuos iesimos para mutar            
+            individuo_subproblema = generacion_actual[indice_subproblema] # obtenemos el individuo iesimo de la generacion actual (este es el individuo asignado a este subproblema)
+            indices_pesos_mutacion = random.sample(Conjunto_pesos_vecinos[peso_subproblema], 3) # obtenemos los indices de los individuos para obtener el vector mutante
+            individuos_mutacion = [generacion_actual[it] for it in indices_pesos_mutacion] # obtenemos los individuos iesimos para obtener el vector mutante            
             individuo_mutante = mutacion_DE(peso_subproblema, individuos_mutacion) # obtenemos el individuo mutante
             individuo_hijo = cruce_DE(individuo_mutante, individuo_subproblema) 
             if random.random() < 1/30:
@@ -126,8 +115,7 @@ def bucle(generacion_0, punto_referencia_inicial):
             individuo_hijo = comprobar_individuo(individuo_hijo) # comprobamos que los valores del hijo estén dentro de los permintidos            
             evaluacion_hijo = funcion_zdt3(individuo_hijo) # evaluamos la funcion del hijo
             punto_referencia_actual = actualizar_punto_referencia(punto_referencia_actual, evaluacion_hijo) # actualizamos el punto de referencia
-            
-            generacion_actual = actualizacion_vecinos(individuo_hijo, evaluacion_hijo, punto_referencia_actual, generacion_actual, peso_subproblema)
+            generacion_actual = actualizacion_vecinos(individuo_hijo, punto_referencia_actual, generacion_actual, peso_subproblema) # cambiamos los individuos de los subproblemas vecinos
 
         it+=1
         puntos_finales = test_generacion(generacion_actual)

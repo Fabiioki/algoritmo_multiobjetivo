@@ -4,9 +4,7 @@ Created on Thu Mar  2 13:12:59 2023
 
 @author: fabio
 """
-import math
-
-from zdt3_function import funcion_zdt3
+from zdt3_function import funcion_zdt3, math
 
 #------------------------------------------------------------------------------------------------------------------------------
 # Función tchebycheff
@@ -19,50 +17,9 @@ def tchebycheff(individuo, peso, punto_ref):
     
     return max(tche_1,tche_2)
 
-
-#------------------------------------------------------------------------------------------------------------------------------
-# Pesos
-
-def crear_pesos(N_pob):
-    return  [(i/(N_pob-1), 1-i/(N_pob-1)) for i in range(N_pob)]
-
-
-def distancia_vecinos(vector, vectores):
-    def dist_euc (v1, v2):
-        v1x,v1y = v1
-        v2x,v2y = v2
-        return math.sqrt((v2x-v1x)**2 + (v2y-v1y)**2)
-    # Dado un vector peso devuelve todas las distancias que tiene con los demas vectores peso 
-    ls_out = list()
-    for it in range(len(vectores)):
-        ls_out.append((it, dist_euc(vector,vectores[it])))
-    return ls_out
-
-def vecindad_pesos(v_pesos,vecindad): # Devuelve los INDICES de los vecinos
-    # Devuelve los vecinos más cercanos de un vector peso dado un porcentaje de vecinos que queremos
-    # Clave = (vector_peso, puesto) : Valor = Conjunto de pesos vecinos
-    vecinos = dict()
-    n_vec = math.floor(vecindad*len(v_pesos))
-    # it = 0
-    for vector in v_pesos:
-        aux = distancia_vecinos(vector,v_pesos)
-        aux.sort(key = lambda x : x[1])
-        vecinos_vector = aux[:n_vec]
-        # vecinos[(vector,it)] = [v[0] for v in vecinos_vector]
-        vecinos[(vector)] = [v[0] for v in vecinos_vector]
-        # it += 1
-    return vecinos
-
-
 #------------------------------------------------------------------------------------------------------------------------------
 # Puntos de referencia
-
-def inicializar_punto_referencia(fitness_poblacion):
-    conj_f1 = [fit[0] for fit in fitness_poblacion]
-    conj_f2 = [fit[1] for fit in fitness_poblacion]
-    return (min(conj_f1),min(conj_f2))
     
-
 def actualizar_punto_referencia(punto_ref_actual, punto_ref_candidato):
     z1_act,z2_act = punto_ref_actual
     z1_can,z2_can = punto_ref_candidato

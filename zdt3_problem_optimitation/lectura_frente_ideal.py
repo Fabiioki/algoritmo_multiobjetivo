@@ -25,7 +25,7 @@ plt.scatter(lista_f1, lista_f2)
 
 
 # 
-archivo = open("pop_nsgaii/generacion_final_nsgaii.txt","r")
+archivo = open("pop_nsgaii/zdt3_pop_100g_100.txt","r")
 lines = archivo.readlines()
 poblacion = list()
 fit_pop = list()
