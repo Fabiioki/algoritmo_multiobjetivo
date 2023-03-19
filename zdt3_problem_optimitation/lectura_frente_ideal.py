@@ -41,9 +41,9 @@ f_x = [x[0] for x in fit_pop]
 f_y = [y[1] for y in fit_pop]
 plt.scatter(f_x, f_y)
 
-test = test_generacion(poblacion)
-t_x = [x[0] for x in test]
-t_y = [y[1] for y in test]
+Test_nsgaii = test_generacion(poblacion)
+t_x = [x[0] for x in Test_nsgaii]
+t_y = [y[1] for y in Test_nsgaii]
 plt.scatter(t_x, t_y)
     
 # print(poblacion[1])    

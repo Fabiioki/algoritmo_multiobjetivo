@@ -95,6 +95,7 @@ def actualizacion_vecinos(hijo, punto_referencia, generacion_actual, peso_subpro
             generacion_actual[indice_peso] = hijo
     return generacion_actual
 
+        
 
 ############################################################################################################################################################################################################################
 def bucle(generacion_0, punto_referencia_inicial):
