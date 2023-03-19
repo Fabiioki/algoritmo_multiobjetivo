@@ -6,7 +6,7 @@ Created on Thu Mar  2 12:36:23 2023
 """
 import matplotlib.pyplot as plt
 from inicializacion import test_generacion
-
+'''
 archivo = open("pop_nsgaii/frente_ideal.txt","r")
 lines = archivo.readlines()
 
@@ -20,30 +20,31 @@ for line in lines :
     lista_f1.append(f1)
     lista_f2.append(f2)
     
-plt.scatter(lista_f1, lista_f2,color="limegreen")
+plt.scatter(lista_f1, lista_f2)
 
 lista_frente = zip(lista_f1,lista_f2)
-
- 
-# Leemos el fichero con la generación final de nsgaii
-
-archivo = open("pop_nsgaii/zdt3_pop100_g100.txt","r")
+'''
+# 
+archivo = open("pop_nsgaii/cf6_pop_200g_50.txt","r")
 lines = archivo.readlines()
 poblacion = list()
-Test_nsgaii = list()
+fit_pop = list()
 
 for linea in lines:
     linea_cortada= linea.split()
     fit_ind = [float(elemento) for elemento in linea_cortada[:2]]
-    individuo = [float(elemento) for elemento in linea_cortada[2:32]]
+    individuo = [float(elemento) for elemento in linea_cortada[5:9]]
     poblacion.append(individuo)
-    Test_nsgaii.append(fit_ind)
+    fit_pop.append(fit_ind)
  
-f_x = [x[0] for x in Test_nsgaii]
-f_y = [y[1] for y in Test_nsgaii]
-plt.scatter(f_x, f_y, color ="navy")
+f_x = [x[0] for x in fit_pop]
+f_y = [y[1] for y in fit_pop]
+plt.scatter(f_x, f_y)
 
-
+Test_nsgaii = test_generacion(poblacion)
+t_x = [x[0] for x in Test_nsgaii]
+t_y = [y[1] for y in Test_nsgaii]
+plt.scatter(t_x, t_y)
     
 # print(poblacion[1])    
 

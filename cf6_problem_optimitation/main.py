@@ -15,10 +15,9 @@ from inicializacion import generacion_inicial,crear_pesos, vecindad_pesos, test_
     # N_poblacion: tamaño de la población
     # Generaciones: Número de generaciones
     # T_vecindad : Tamaño de vecindad
-    
 N_poblacion = 100
 Generaciones = 100
-T_vecindad = 0.20
+T_vecindad = 0.1
 
 # Pasos que hay que seguir:
     # Inicializacion
@@ -86,12 +85,11 @@ def mutacion_gaussiana(individuo):
 
 
 def actualizacion_vecinos(hijo, punto_referencia, generacion_actual, peso_subproblema):
-    # gte_hijo = tchebycheff(hijo, peso_subproblema, punto_referencia)
+    gte_hijo = tchebycheff(hijo, peso_subproblema, punto_referencia)
     indices_pesos_vecinos = Conjunto_pesos_vecinos[peso_subproblema]
     for indice_peso in indices_pesos_vecinos:
         peso = Conjunto_pesos[indice_peso]
         individuo = generacion_actual[indice_peso]
-        gte_hijo = tchebycheff(hijo, peso, punto_referencia)
         gte_vecino = tchebycheff(individuo, peso, punto_referencia)
         if gte_hijo <= gte_vecino:
             generacion_actual[indice_peso] = hijo
@@ -119,8 +117,8 @@ def bucle(generacion_0, punto_referencia_inicial):
             evaluacion_hijo = funcion_zdt3(individuo_hijo) # evaluamos la funcion del hijo
             punto_referencia_actual = actualizar_punto_referencia(punto_referencia_actual, evaluacion_hijo) # actualizamos el punto de referencia
             generacion_actual = actualizacion_vecinos(individuo_hijo, punto_referencia_actual, generacion_actual, peso_subproblema) # cambiamos los individuos de los subproblemas vecinos
+
         it+=1
-        '''
         puntos_finales = test_generacion(generacion_actual)
         p_x = [x[0] for x in puntos_finales]
         p_y = [y[1] for y in puntos_finales]
@@ -131,57 +129,19 @@ def bucle(generacion_0, punto_referencia_inicial):
         plt.xlim(0, 1)
         plt.ylim(-1,4)
         plt.show()
-        '''
+
     return generacion_actual
 
 
-def visualizar_generacion_final():
-    
-    prueba_bucle = bucle(generacion_0, punto_referencia_inicial)
-    puntos_finales = test_generacion(prueba_bucle)
-    p_x = [x[0] for x in puntos_finales]
-    p_y = [y[1] for y in puntos_finales]
-    texto = "Número de subproblemas: "+ str(N_poblacion)+ ", Número de generaciones: "+ str(Generaciones) + ", Vecindad: " + str(T_vecindad)
-    plt.title(texto)
-    plt.scatter(p_x, p_y, color = "red")
-    return puntos_finales
-
+prueba_bucle = bucle(generacion_0, punto_referencia_inicial)
+# print(len(prueba_bucle))
+puntos_finales = test_generacion(prueba_bucle)
+# # print(puntos_finales)
+p_x = [x[0] for x in puntos_finales]
+p_y = [y[1] for y in puntos_finales]
+texto = "Número de subproblemas:"+ str(N_poblacion)+ ", Número de generaciones:"+ str(Generaciones) + ", Vecindad:" + str(T_vecindad)
 from lectura_frente_ideal import *
-Generacion_final = visualizar_generacion_final()
+plt.title(texto)
+plt.scatter(p_x, p_y)
 
 
-
-#-------------------------------------------------------------------------------------------
-# PLOTS ------------------------------------------------------------------------------------
-# Visualizar los pesos vecinos de cada peso
-def visualizar_vecinos_pesos():
-    for peso in Conjunto_pesos:
-        indices_pesos_vecinos = Conjunto_pesos_vecinos[peso]
-        pesos_vecinos = [ Conjunto_pesos[peso] for peso in indices_pesos_vecinos]
-        peso_x = [peso[0] for peso in pesos_vecinos]
-        peso_y = [peso[1] for peso in pesos_vecinos]
-        plt.scatter(peso_x, peso_y)
-        plt.xlim(0, 1)
-        plt.ylim(0, 1)
-        plt.show()
-        
-# visualizar_vecinos_pesos()
-#-------------------------------------------------------------------------------------------
-# Visualizar todos los pesos en el plano
-def visualizar_pesos():
-    peso_x = [peso[0] for peso in Conjunto_pesos]
-    peso_y = [peso[1] for peso in Conjunto_pesos]
-    plt.scatter(peso_x, peso_y)
-    
-# visualizar_pesos()
-#-------------------------------------------------------------------------------------------
-# Visualizar el los individuos de la generacion incial sobre f1 y f2
-def visualizar_gen_inicial_pr_inicial():
-    puntos_gen_inicial = test_generacion(generacion_0)
-    test_x = [x[0] for x in puntos_gen_inicial]
-    test_y = [y[1] for y in puntos_gen_inicial]
-    plt.title("PLot generación incial de "+ str(N_poblacion) + " individuos y punto de referencia inicial")
-    plt.scatter(test_x, test_y)
-    plt.scatter(punto_referencia_inicial[0], punto_referencia_inicial[1], color = "red")
-
-# visualizar_gen_inicial_pr_inicial()

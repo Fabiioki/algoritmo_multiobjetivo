@@ -5,12 +5,13 @@ Created on Mon Mar  6 14:09:13 2023
 @author: fabio
 """
 import random
+import matplotlib.pyplot as plt
 import math
 
 # from pesos import crear_pesos, vecindad_pesos
 from tchebycheff import tchebycheff
-from zdt3_function import funcion_zdt3
-
+# from zdt3_function import funcion_zdt3
+from cf6_function import funcion_cf6
 # N_poblacion = 100
 # T_vecindad = 0.2
 
@@ -55,7 +56,7 @@ def generacion_inicial(n_indivuos):
 def test_generacion(individuos):
     puntos = list()
     for individuo in individuos:
-        puntos.append(funcion_zdt3(individuo))
+        puntos.append(funcion_cf6(individuo))
     return puntos
 
 # evaluacion_generacion_0 = test_generacion(generacion_0)
